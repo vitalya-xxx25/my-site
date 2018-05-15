@@ -32,9 +32,9 @@ class Roles extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'key'], 'required'],
             [['active', 'trash'], 'integer'],
-            [['name'], 'string', 'max' => 50],
+            [['name', 'key'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 255],
         ];
     }
@@ -46,6 +46,7 @@ class Roles extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'key' => Yii::t('app', 'Key'),
             'name' => Yii::t('app', 'Name'),
             'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),

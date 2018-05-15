@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Roles */
+/* @var $model common\models\Permissions */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Roles'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Permissions'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="roles-view">
+<div class="permissions-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,11 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'key',
             'name',
+            'key',
             'description',
             'active',
             'trash',
+            'role_id',
         ],
     ]) ?>
 

@@ -32,9 +32,9 @@ class Permissions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'role_id'], 'required'],
+            [['name', 'role_id', 'key'], 'required'],
             [['active', 'trash', 'role_id'], 'integer'],
-            [['name', 'description'], 'string', 'max' => 50],
+            [['name', 'description', 'key'], 'string', 'max' => 50],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Roles::className(), 'targetAttribute' => ['role_id' => 'id']],
         ];
     }
@@ -46,6 +46,7 @@ class Permissions extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'key' => Yii::t('app', 'Key'),
             'name' => Yii::t('app', 'Name'),
             'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),
