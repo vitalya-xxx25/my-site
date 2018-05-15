@@ -34,6 +34,15 @@
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    [
+                        'label' => 'Доступы',
+                        'icon' => 'share',
+                        'url' => '#',
+                        'items' => [
+                            ['label' => 'Роли', 'icon' => 'file-code-o', 'url' => ['/roles'],],
+                            ['label' => 'Права', 'icon' => 'dashboard', 'url' => ['/permissions'],],
+                        ]
+                    ]
                     /*[
                         'label' => 'Some tools',
                         'icon' => 'share',

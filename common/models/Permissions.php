@@ -9,12 +9,13 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string $key
  * @property string $description
  * @property int $active
  * @property int $trash
- * @property int $role_id
  *
- * @property Roles $role
+ * @property Roles2permissions[] $roles2permissions
+ * @property Roles[] $roles
  */
 class Permissions extends \yii\db\ActiveRecord
 {
@@ -32,10 +33,9 @@ class Permissions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'role_id', 'key'], 'required'],
-            [['active', 'trash', 'role_id'], 'integer'],
-            [['name', 'description', 'key'], 'string', 'max' => 50],
-            [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Roles::className(), 'targetAttribute' => ['role_id' => 'id']],
+            [['name', 'key'], 'required'],
+            [['active', 'trash'], 'integer'],
+            [['name', 'key', 'description'], 'string', 'max' => 50],
         ];
     }
 
@@ -46,20 +46,27 @@ class Permissions extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'key' => Yii::t('app', 'Key'),
             'name' => Yii::t('app', 'Name'),
+            'key' => Yii::t('app', 'Key'),
             'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),
             'trash' => Yii::t('app', 'Trash'),
-            'role_id' => Yii::t('app', 'Role ID'),
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRole()
+    public function getRoles2permissions()
     {
-        return $this->hasOne(Roles::className(), ['id' => 'role_id']);
+        return $this->hasMany(Roles2permissions::className(), ['permission_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoles()
+    {
+        return $this->hasMany(Roles::className(), ['id' => 'role_id'])->viaTable('roles2permissions', ['permission_id' => 'id']);
     }
 }

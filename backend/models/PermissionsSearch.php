@@ -18,7 +18,7 @@ class PermissionsSearch extends Permissions
     public function rules()
     {
         return [
-            [['id', 'active', 'trash', 'role_id'], 'integer'],
+            [['id', 'active', 'trash'], 'integer'],
             [['name', 'key', 'description'], 'safe'],
         ];
     }
@@ -62,7 +62,6 @@ class PermissionsSearch extends Permissions
             'id' => $this->id,
             'active' => $this->active,
             'trash' => $this->trash,
-            'role_id' => $this->role_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

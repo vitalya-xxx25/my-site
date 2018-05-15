@@ -9,15 +9,19 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string $key
  * @property string $description
  * @property int $active
  * @property int $trash
  *
+ * @property Roles2permissions[] $roles2permissions
  * @property Permissions[] $permissions
  * @property User2roles[] $user2roles
  */
 class Roles extends \yii\db\ActiveRecord
 {
+    public $selected;
+
     /**
      * {@inheritdoc}
      */
@@ -46,8 +50,8 @@ class Roles extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'key' => Yii::t('app', 'Key'),
             'name' => Yii::t('app', 'Name'),
+            'key' => Yii::t('app', 'Key'),
             'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),
             'trash' => Yii::t('app', 'Trash'),
@@ -57,9 +61,27 @@ class Roles extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getRoles2permissions()
+    {
+        return $this->hasMany(Roles2permissions::className(), ['role_id' => 'id'])
+            ->andWhere([
+                'active' => 1,
+                'trash' => 0
+            ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPermissions()
     {
-        return $this->hasMany(Permissions::className(), ['role_id' => 'id']);
+        return $this->hasMany(Permissions::className(), ['id' => 'permission_id'])
+            ->viaTable('roles2permissions', ['role_id' => 'id'], function($query) {
+                $query->andWhere([
+                    'active' => 1,
+                    'trash' => 0
+                ]);
+            });
     }
 
     /**

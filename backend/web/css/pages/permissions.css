@@ -1,0 +1,13 @@
+.roles-list-group {
+    max-width: 555px;
+    min-width: 100px;
+}
+.roles-list-group .roles-list-item-name {
+    font-weight: bold;
+}
+.roles-list-group .btn {
+    float: right;
+    margin-top: -5px;
+    margin-right: -10px;
+    width: 120px;
+}

@@ -2,18 +2,28 @@
 
 namespace backend\controllers;
 
+use backend\assets\PermissionsAsset;
+use common\models\Roles;
+use common\models\Roles2Permissions;
 use Yii;
 use common\models\Permissions;
 use backend\models\PermissionsSearch;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * PermissionsController implements the CRUD actions for Permissions model.
  */
 class PermissionsController extends Controller
 {
+    public function beforeAction($action) {
+        PermissionsAsset::register($this->view);
+        return parent::beforeAction($action);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -90,8 +100,17 @@ class PermissionsController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $roles = Roles::find()
+            ->with('permissions')
+            ->where([
+                'active' => 1,
+                'trash' => 0
+            ])
+            ->all();
+
         return $this->render('update', [
             'model' => $model,
+            'roles' => $roles
         ]);
     }
 
@@ -123,5 +142,81 @@ class PermissionsController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Привязка ролей к правам
+     *
+     * @return array
+     */
+    public function actionSetRole() {
+        if (\Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
+            $action = \Yii::$app->request->post('action');
+            $roleId = \Yii::$app->request->post('roleId');
+            $permissionId = \Yii::$app->request->post('permissionId');
+            $result = [];
+
+            try {
+                if ($action && $roleId && $permissionId) {
+                    $roleExists = Roles::find()
+                        ->where([
+                            'id' => $roleId,
+                            'active' => 1,
+                            'trash' => 0
+                        ])
+                        ->exists();
+
+                    $permissionExists = Permissions::find()
+                        ->where([
+                            'id' => $permissionId,
+                            'active' => 1,
+                            'trash' => 0
+                        ])
+                        ->exists();
+
+                    if ($roleExists && $permissionExists) {
+                        $model = Roles2Permissions::find()
+                            ->where([
+                                'role_id' => $roleId,
+                                'permission_id' => $permissionId,
+                            ])
+                            ->one();
+
+                        switch ($action) {
+                            case 'add' :
+                                if (!$model) {
+                                    $model = new Roles2Permissions([
+                                        'role_id' => $roleId,
+                                        'permission_id' => $permissionId,
+                                    ]);
+                                }
+                                else {
+                                    $model->active = 1;
+                                    $model->trash = 0;
+                                }
+
+                                $model->save();
+                                $result = ['success' => 1, 'action' => 'add'];
+                                break;
+
+                            case 'remove' :
+                                if ($model) {
+                                    $model->active = 0;
+                                    $model->save();
+                                    $result = ['success' => 1, 'action' => 'remove'];
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception $e) {
+                $result = ['error' => 1];
+            }
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+            return $result;
+            exit();
+        }
     }
 }

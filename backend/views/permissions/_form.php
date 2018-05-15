@@ -10,7 +10,12 @@ use yii\widgets\ActiveForm;
 
 <div class="permissions-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'class' => 'permissions-active-form',
+            'data-permis_id' => $model->id
+        ]
+    ]); ?>
 
     <?= $form->field($model, 'key')->textInput(['maxlength' => true]) ?>
 
@@ -22,7 +27,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'trash')->checkbox(['value' => '1']) ?>
 
-    <?= $form->field($model, 'role_id')->textInput() ?>
+    <? if (!empty($roles)) : ?>
+        <ul class="list-group roles-list-group">
+            <? foreach ($roles as $role) : ?>
+                <li data-id="<?=$role->id?>" class="list-group-item">
+                    <span class="roles-list-item-name"><?=$role->name?></span>
+                    <button type="button" class="btn btn-success btn-sm remove-role-btn <?=(!$role->permissions ? 'hidden' : '')?>">установленно</button>
+                    <button type="button" class="btn btn-sm add-role-btn <?=($role->permissions ? 'hidden' : '')?>">добавить</button>
+                </li>
+            <? endforeach; ?>
+        </ul>
+    <? endif; ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
