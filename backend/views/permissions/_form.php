@@ -28,15 +28,20 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'trash')->checkbox(['value' => '1']) ?>
 
     <? if (!empty($roles)) : ?>
-        <ul class="list-group roles-list-group">
-            <? foreach ($roles as $role) : ?>
-                <li data-id="<?=$role->id?>" class="list-group-item">
-                    <span class="roles-list-item-name"><?=$role->name?></span>
-                    <button type="button" class="btn btn-success btn-sm remove-role-btn <?=(!$role->permissions ? 'hidden' : '')?>">установленно</button>
-                    <button type="button" class="btn btn-sm add-role-btn <?=($role->permissions ? 'hidden' : '')?>">добавить</button>
-                </li>
-            <? endforeach; ?>
-        </ul>
+        <div class="panel panel-default">
+            <div class="panel-heading">Роли</div>
+            <div class="panel-body">
+                <ul class="list-group roles-list-group">
+                    <? foreach ($roles as $role) : ?>
+                        <li data-id="<?=$role->id?>" class="list-group-item">
+                            <span class="roles-list-item-name"><?=$role->name?></span>
+                            <button type="button" class="btn btn-success btn-sm remove-role-btn <?=(!$role->permissions ? 'hidden' : '')?>">установленно</button>
+                            <button type="button" class="btn btn-sm add-role-btn <?=($role->permissions ? 'hidden' : '')?>">добавить</button>
+                        </li>
+                    <? endforeach; ?>
+                </ul>
+            </div>
+        </div>
     <? endif; ?>
 
     <div class="form-group">

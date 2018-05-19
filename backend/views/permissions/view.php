@@ -37,4 +37,18 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <? if (!empty($roles)) : ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">Роли</div>
+            <div class="panel-body">
+                <ul class="list-group roles-list-group">
+                    <? foreach ($roles as $role) : ?>
+                        <li data-id="<?=$role->id?>" class="list-group-item">
+                            <span class="roles-list-item-name"><?=$role->name?></span>
+                        </li>
+                    <? endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    <? endif; ?>
 </div>

@@ -62,8 +62,18 @@ class PermissionsController extends Controller
      */
     public function actionView($id)
     {
+        $roles = Roles::find()
+            ->alias('self')
+            ->innerJoinWith('permissions')
+            ->where([
+                'self.active' => 1,
+                'self.trash' => 0
+            ])
+            ->all();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'roles' => $roles
         ]);
     }
 
