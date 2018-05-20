@@ -35,10 +35,11 @@
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
-                        'label' => 'Доступы',
+                        'label' => 'Управление юзерами',
                         'icon' => 'share',
                         'url' => '#',
                         'items' => [
+                            ['label' => 'Пользователи', 'icon' => 'file-code-o', 'url' => ['/user'],],
                             ['label' => 'Роли', 'icon' => 'file-code-o', 'url' => ['/roles'],],
                             ['label' => 'Права', 'icon' => 'dashboard', 'url' => ['/permissions'],],
                         ]
