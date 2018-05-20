@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\assets\PermissionsAsset;
+use common\models\m\RolesModel;
 use common\models\Roles;
 use common\models\Roles2Permissions;
 use Yii;
@@ -51,6 +52,7 @@ class PermissionsController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'rolesList' => RolesModel::getList()
         ]);
     }
 
@@ -133,7 +135,9 @@ class PermissionsController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->trash = 1;
+        $model->save();
 
         return $this->redirect(['index']);
     }

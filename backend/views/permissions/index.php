@@ -30,11 +30,37 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'key',
             'description',
-            'active',
-            //'trash',
-            //'role_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute'=>'active',
+                'filter' => [1 => 'Да', 0 => 'Нет'],
+                'content'=>function($data) {
+                    return $data->active ? 'Активно' : 'Не активно';
+                },
+            ],
+            [
+                'attribute'=>'roles_id',
+                'label'=>'Роли',
+                'format'=>'html',
+                'content'=>function($data) {
+                    if (!empty($data->roles)) {
+                        foreach ($data->roles as $role) {
+                            return $role->name . '<br>';
+                        }
+                    }
+                },
+                'filter' => $rolesList,
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete}',
+                'visibleButtons' => [
+                    'view' => true,
+                    'update' => true,
+                    'delete' => function($data) {
+                        return ($data->trash == 0);
+                    }
+                ],
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

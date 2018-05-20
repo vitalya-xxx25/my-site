@@ -59,7 +59,12 @@ class Permissions extends \yii\db\ActiveRecord
      */
     public function getRoles2permissions()
     {
-        return $this->hasMany(Roles2permissions::className(), ['permission_id' => 'id']);
+        return $this->hasMany(Roles2permissions::className(), ['permission_id' => 'id'])
+            ->andWhere([
+                'roles2permissions.active' => 1,
+                'roles2permissions.trash' => 0
+            ])
+            ->alias('roles2permissions');
     }
 
     /**
@@ -67,6 +72,17 @@ class Permissions extends \yii\db\ActiveRecord
      */
     public function getRoles()
     {
-        return $this->hasMany(Roles::className(), ['id' => 'role_id'])->viaTable('roles2permissions', ['permission_id' => 'id']);
+        return $this->hasMany(Roles::className(), ['id' => 'role_id'])
+            ->viaTable('roles2permissions', ['permission_id' => 'id'], function($query) {
+                $query->andWhere([
+                    'roles2permissions.active' => 1,
+                    'roles2permissions.trash' => 0
+                ]);
+            })
+            ->alias('roles')
+            ->andWhere([
+                'roles.active' => 1,
+                'roles.trash' => 0
+            ]);
     }
 }

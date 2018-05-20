@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\m\PermissionsModel;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -12,13 +13,15 @@ use common\models\Permissions;
  */
 class PermissionsSearch extends Permissions
 {
+    public $roles_id;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'active', 'trash'], 'integer'],
+            [['id', 'active', 'trash', 'roles_id'], 'integer'],
             [['name', 'key', 'description'], 'safe'],
         ];
     }
@@ -41,7 +44,8 @@ class PermissionsSearch extends Permissions
      */
     public function search($params)
     {
-        $query = Permissions::find();
+        $query = PermissionsModel::find()
+            ->joinWith('roles');
 
         // add conditions that should always apply here
 
@@ -67,6 +71,10 @@ class PermissionsSearch extends Permissions
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'key', $this->key])
             ->andFilterWhere(['like', 'description', $this->description]);
+
+        if ($this->roles_id) {
+            $query->andWhere(['roles.id' => $this->roles_id]);
+        }
 
         return $dataProvider;
     }
