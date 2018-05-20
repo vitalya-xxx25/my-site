@@ -29,10 +29,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'description',
-            'active',
-            'trash',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute'=>'active',
+                'filter' => [1 => 'Да', 0 => 'Нет'],
+                'content'=>function($data) {
+                    return $data->active ? 'Активно' : 'Не активно';
+                },
+            ],
+            [
+                'attribute'=>'permission_id',
+                'label'=>'Права',
+                'format'=>'html',
+                'content'=>function($data) {
+                    return $data->permissionsList;
+                },
+                'filter' => $permissionList,
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete}',
+                'visibleButtons' => [
+                    'view' => true,
+                    'update' => true,
+                    'delete' => function($data) {
+                        return ($data->trash == 0);
+                    }
+                ],
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

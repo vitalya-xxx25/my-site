@@ -32,8 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'key',
             'description',
-            'active',
-            'trash',
+            [
+                'attribute'=>'active',
+                'value'=>function($model) {
+                    return $model->active ? 'Активно' : 'Не активно';
+                },
+            ],
+            [
+                'attribute'=>'trash',
+                'value'=>function($model) {
+                    return $model->trash ? 'Удален' : '';
+                },
+            ],
         ],
     ]) ?>
 

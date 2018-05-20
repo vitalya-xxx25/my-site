@@ -64,7 +64,7 @@ class Roles extends \yii\db\ActiveRecord
     public function getRoles2permissions()
     {
         return $this->hasMany(Roles2permissions::className(), ['role_id' => 'id'])
-            ->andWhere([
+            ->andOnCondition([
                 'roles2permissions.active' => 1,
                 'roles2permissions.trash' => 0
             ])
@@ -78,13 +78,13 @@ class Roles extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Permissions::className(), ['id' => 'permission_id'])
             ->viaTable('roles2permissions', ['role_id' => 'id'], function($query) {
-                $query->andWhere([
+                $query->andOnCondition([
                     'roles2permissions.active' => 1,
                     'roles2permissions.trash' => 0
                 ]);
             })
             ->alias('permissions')
-            ->andWhere([
+            ->andOnCondition([
                 'permissions.active' => 1,
                 'permissions.trash' => 0
             ]);

@@ -27,7 +27,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'trash')->checkbox(['value' => '1']) ?>
 
-    <? if (!empty($roles)) : ?>
+    <? if (!empty($roles) && !$model->trash) : ?>
         <div class="panel panel-default">
             <div class="panel-heading">Роли</div>
             <div class="panel-body">

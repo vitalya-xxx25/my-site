@@ -32,9 +32,34 @@ $this->params['breadcrumbs'][] = $this->title;
             'key',
             'name',
             'description',
-            'active',
-            'trash',
+            [
+                'attribute'=>'active',
+                'value'=>function($model) {
+                    return $model->active ? 'Активно' : 'Не активно';
+                },
+            ],
+            [
+                'attribute'=>'trash',
+                'value'=>function($model) {
+                    return $model->trash ? 'Удален' : '';
+                },
+            ],
         ],
     ]) ?>
+
+    <? if (!empty($permissions)) : ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">Роли</div>
+            <div class="panel-body">
+                <ul class="list-group roles-list-group">
+                    <? foreach ($permissions as $permission) : ?>
+                        <li data-id="<?=$permission->id?>" class="list-group-item">
+                            <span class="roles-list-item-name"><?=$permission->name?></span>
+                        </li>
+                    <? endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    <? endif; ?>
 
 </div>

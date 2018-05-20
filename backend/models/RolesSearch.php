@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use common\models\m\RolesModel;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -12,13 +13,15 @@ use common\models\Roles;
  */
 class RolesSearch extends Roles
 {
+    public $permission_id;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'active', 'trash'], 'integer'],
+            [['id', 'active', 'trash', 'permission_id'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -41,7 +44,8 @@ class RolesSearch extends Roles
      */
     public function search($params)
     {
-        $query = Roles::find();
+        $query = RolesModel::find()
+            ->joinWith('permissions');
 
         // add conditions that should always apply here
 
@@ -66,6 +70,10 @@ class RolesSearch extends Roles
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
+
+        if (!empty($this->permission_id)) {
+            $query->andWhere(['permissions.id' => $this->permission_id]);
+        }
 
         return $dataProvider;
     }

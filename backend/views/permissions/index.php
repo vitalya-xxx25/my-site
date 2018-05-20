@@ -42,11 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'Роли',
                 'format'=>'html',
                 'content'=>function($data) {
-                    if (!empty($data->roles)) {
-                        foreach ($data->roles as $role) {
-                            return $role->name . '<br>';
-                        }
-                    }
+                    return $data->rolesList;
                 },
                 'filter' => $rolesList,
             ],

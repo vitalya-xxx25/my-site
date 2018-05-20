@@ -18,4 +18,14 @@ class RolesModel extends Roles
 
         return ArrayHelper::map($rows, 'id', 'name');
     }
+
+    public function getPermissionsList() {
+        $permissions = [];
+        if (!empty($this->permissions)) {
+            foreach ($this->permissions as $permission) {
+                array_push($permissions, $permission->name);
+            }
+        }
+        return implode('<br>', $permissions);
+    }
 }

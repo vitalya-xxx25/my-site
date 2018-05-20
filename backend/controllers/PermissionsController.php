@@ -66,7 +66,9 @@ class PermissionsController extends Controller
     {
         $roles = Roles::find()
             ->alias('self')
-            ->innerJoinWith('permissions')
+            ->innerJoinWith(['permissions' => function($query) use ($id) {
+                $query->andOnCondition(['permissions.id' => $id]);
+            }])
             ->where([
                 'self.active' => 1,
                 'self.trash' => 0
@@ -113,10 +115,13 @@ class PermissionsController extends Controller
         }
 
         $roles = Roles::find()
-            ->with('permissions')
+            ->alias('self')
+            ->with(['permissions' => function($query) use ($id) {
+                $query->where(['permissions.id' => $id]);
+            }])
             ->where([
-                'active' => 1,
-                'trash' => 0
+                'self.active' => 1,
+                'self.trash' => 0
             ])
             ->all();
 

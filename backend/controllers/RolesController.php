@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\assets\RolesAsset;
+use common\models\m\PermissionsModel;
 use Yii;
 use common\models\Roles;
 use app\models\RolesSearch;
@@ -14,6 +16,11 @@ use yii\filters\VerbFilter;
  */
 class RolesController extends Controller
 {
+    public function beforeAction($action) {
+        RolesAsset::register($this->view);
+        return parent::beforeAction($action);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,6 +48,7 @@ class RolesController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'permissionList' => PermissionsModel::getList()
         ]);
     }
 
@@ -52,8 +60,20 @@ class RolesController extends Controller
      */
     public function actionView($id)
     {
+        $permissions = PermissionsModel::find()
+            ->alias('self')
+            ->innerJoinWith(['roles' => function($query) use ($id) {
+                $query->andOnCondition(['roles.id' => $id]);
+            }])
+            ->where([
+                'self.active' => 1,
+                'self.trash' => 0
+            ])
+            ->all();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'permissions' => $permissions
         ]);
     }
 
@@ -90,8 +110,20 @@ class RolesController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $permissions = PermissionsModel::find()
+            ->alias('self')
+            ->with(['roles' => function($query) use ($id) {
+                $query->where(['roles.id' => $id]);
+            }])
+            ->where([
+                'self.active' => 1,
+                'self.trash' => 0
+            ])
+            ->all();
+
         return $this->render('update', [
             'model' => $model,
+            'permissions' => $permissions
         ]);
     }
 
