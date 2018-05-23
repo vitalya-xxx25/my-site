@@ -46,8 +46,6 @@ class PermissionsController extends Controller
      */
     public function actionIndex()
     {
-        // for test revert
-
         $searchModel = new PermissionsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
