@@ -3,19 +3,27 @@
 namespace backend\controllers;
 
 use backend\assets\RolesAsset;
+use common\components\OnlyAuthController;
 use common\models\m\PermissionsModel;
 use Yii;
 use common\models\Roles;
 use app\models\RolesSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * RolesController implements the CRUD actions for Roles model.
  */
-class RolesController extends Controller
+class RolesController extends OnlyAuthController
 {
+    public $closedActions = [
+        'Index',
+        'View',
+        'Create',
+        'Update',
+        'Delete',
+    ];
+
     public function beforeAction($action) {
         RolesAsset::register($this->view);
         return parent::beforeAction($action);
