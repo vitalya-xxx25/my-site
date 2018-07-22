@@ -2,18 +2,29 @@
 
 namespace backend\controllers;
 
+use backend\assets\UserAsset;
+use common\models\m\UserModel;
+use common\models\Roles;
+use common\models\User2roles;
 use Yii;
 use common\models\User;
 use backend\models\UserSearch;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * UserController implements the CRUD actions for User model.
  */
 class UserController extends Controller
 {
+    public function beforeAction($action) {
+        UserAsset::register($this->view);
+        return parent::beforeAction($action);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -66,15 +77,105 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = UserModel::find()
+            ->alias('self')
+            ->with(['user2roles'])
+            ->where(['self.id' => $id])
+            ->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $roles = Roles::find()
+            ->alias('self')
+            ->where([
+                'self.active' => 1,
+                'self.trash' => 0
+            ])
+            ->all();
+
         return $this->render('update', [
             'model' => $model,
+            'roles' => $roles,
         ]);
+    }
+
+    /**
+     * Привязка ролей к пользователям
+     *
+     * @return array
+     */
+    public function actionSetRole() {
+        if (\Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
+            $action = \Yii::$app->request->post('action');
+            $roleId = \Yii::$app->request->post('roleId');
+            $userId = \Yii::$app->request->post('userId');
+            $result = [];
+
+            try {
+                if ($action && $roleId && $userId) {
+                    $roleExists = Roles::find()
+                        ->where([
+                            'id' => $roleId,
+                            'active' => 1,
+                            'trash' => 0
+                        ])
+                        ->exists();
+
+                    $user = $this->findModel($userId);
+
+                    if ($roleExists && $user) {
+                        $model = User2roles::find()
+                            ->where([
+                                'role_id' => $roleId,
+                                'user_id' => $user->id,
+                            ])
+                            ->one();
+
+                        switch ($action) {
+                            case 'add' :
+                                \Yii::$app->db->createCommand()
+                                    ->update(User2roles::tableName(), ['active' => 0], ['user_id' => $user->id,])
+                                    ->execute();
+
+                                if (!$model) {
+                                    $model = new User2roles([
+                                        'role_id' => $roleId,
+                                        'user_id' => $user->id,
+                                        'modify_user_id' => Yii::$app->user->id,
+                                    ]);
+                                }
+                                else {
+                                    $model->active = 1;
+                                    $model->trash = 0;
+                                    $model->modify_user_id = Yii::$app->user->id;
+                                }
+
+                                $model->save();
+                                $result = ['success' => 1, 'action' => 'add'];
+                                break;
+
+                            case 'remove' :
+                                if ($model) {
+                                    $model->active = 0;
+                                    $model->modify_user_id = Yii::$app->user->id;
+                                    $model->save();
+                                    $result = ['success' => 1, 'action' => 'remove'];
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception $e) {
+                $result = ['error' => 1];
+            }
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+            return $result;
+            exit();
+        }
     }
 
     /**
@@ -100,7 +201,7 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        if (($model = UserModel::findOne($id)) !== null) {
             return $model;
         }
 

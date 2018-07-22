@@ -84,9 +84,16 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser2roles()
-    {
-        return $this->hasMany(User2roles::className(), ['user_id' => 'id']);
+    public function getUser2roles() {
+        return $this->hasMany(User2roles::className(), ['user_id' => 'id'])
+            ->andOnCondition(['trash' => 0, 'active' => 1])
+            ->alias('user2roles');
+    }
+
+    public function getRoles() {
+        return $this->hasOne(Roles::className(), ['id' => 'role_id'])
+            ->via('user2roles')
+            ->alias('roles');
     }
 
     /**

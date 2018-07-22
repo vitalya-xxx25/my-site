@@ -1,11 +1,11 @@
 ;(function($) {
-    var permissionsAddEdit = (function(){
+    var rolesAddEdit = (function(){
         var $this,
-            $form = $('form.permissions-active-form'),
-            permissionId = parseInt($('form.permissions-active-form').data('user_id'));
+            $form = $('form.user-active-form'),
+            userId = parseInt($('form.user-active-form').data('user_id'));
 
         function _setRole(params, callback) {
-            $.post("/permissions/set-role", params)
+            $.post("/user/set-role", params)
                 .done(function(data) {
                     if ((data.success||0)) {
                         callback();
@@ -20,8 +20,12 @@
                 _setRole({
                     action: 'add',
                     roleId: $thisBtn.closest('li').data('id'),
-                    permissionId: permissionId
+                    userId: userId
                 }, function() {
+                    var $rolesListGroup = $thisBtn.closest('.roles-list-group');
+                    $rolesListGroup.find('.remove-role-btn').addClass('hidden');
+                    $rolesListGroup.find('.add-role-btn').removeClass('hidden');
+
                     $thisBtn.closest('li').find('.remove-role-btn').removeClass('hidden');
                     $thisBtn.addClass('hidden');
                 });
@@ -33,7 +37,7 @@
                 _setRole({
                     action: 'remove',
                     roleId: $thisBtn.closest('li').data('id'),
-                    permissionId: permissionId
+                    userId: userId
                 }, function() {
                     $thisBtn.closest('li').find('.add-role-btn').removeClass('hidden');
                     $thisBtn.addClass('hidden');
@@ -50,6 +54,6 @@
     })();
 
     $(document).ready(function(){
-        permissionsAddEdit.init();
+        rolesAddEdit.init();
     });
 })(jQuery);
