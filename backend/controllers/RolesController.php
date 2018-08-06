@@ -56,7 +56,7 @@ class RolesController extends OnlyAuthController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'permissionList' => PermissionsModel::getList()
+            'permissionList' => PermissionsModel::getList(),
         ]);
     }
 

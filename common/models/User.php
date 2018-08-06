@@ -86,7 +86,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUser2roles() {
         return $this->hasMany(User2roles::className(), ['user_id' => 'id'])
-            ->andOnCondition(['trash' => 0, 'active' => 1])
+            ->andOnCondition(['user2roles.trash' => 0, 'user2roles.active' => 1])
             ->alias('user2roles');
     }
 

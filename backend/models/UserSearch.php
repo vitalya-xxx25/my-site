@@ -66,6 +66,7 @@ class UserSearch extends User
     public function search($params)
     {
         $query = User::find()
+            ->alias('self')
             ->joinWith('roles');
 
         // add conditions that should always apply here
@@ -84,21 +85,21 @@ class UserSearch extends User
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'roles.id' => $this->userRole,
+            'self.id' => $this->id,
+            'self.status' => $this->status,
+            'self.created_at' => $this->created_at,
+            'self.updated_at' => $this->updated_at,
+            'self.roles.id' => $this->userRole,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
+        $query->andFilterWhere(['like', 'self.username', $this->username])
 /*            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])*/
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'self.email', $this->email]);
 
-        $query->andFilterWhere(['>=', 'created_at', $this->createTimeStart])
-            ->andFilterWhere(['<', 'created_at', $this->createTimeEnd]);
+        $query->andFilterWhere(['>=', 'self.created_at', $this->createTimeStart])
+            ->andFilterWhere(['<', 'self.created_at', $this->createTimeEnd]);
 
         /*$query->andFilterWhere(['>=', 'updated_at', $this->updateTimeStart])
             ->andFilterWhere(['<', 'updated_at', $this->updateTimeEnd]);*/

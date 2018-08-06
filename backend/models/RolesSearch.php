@@ -45,6 +45,7 @@ class RolesSearch extends Roles
     public function search($params)
     {
         $query = RolesModel::find()
+            ->alias('self')
             ->joinWith('permissions');
 
         // add conditions that should always apply here
@@ -63,13 +64,13 @@ class RolesSearch extends Roles
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'active' => $this->active,
-            'trash' => $this->trash,
+            'self.id' => $this->id,
+            'self.active' => $this->active,
+            'self.trash' => 0,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'self.name', $this->name])
+            ->andFilterWhere(['like', 'self.description', $this->description]);
 
         if (!empty($this->permission_id)) {
             $query->andWhere(['permissions.id' => $this->permission_id]);

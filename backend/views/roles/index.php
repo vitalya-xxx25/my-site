@@ -49,11 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
                 'visibleButtons' => [
-                    'view' => true,
-                    'update' => true,
-                    'delete' => function($data) {
-                        return ($data->trash == 0);
-                    }
+                    'view' => $btns['view'],
+                    'update' => $btns['update'],
+                    'delete' => $btns['delete']
                 ],
             ],
         ],

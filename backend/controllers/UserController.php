@@ -12,7 +12,6 @@ use common\models\User;
 use backend\models\UserSearch;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;

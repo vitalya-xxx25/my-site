@@ -10,7 +10,6 @@ use Yii;
 use common\models\Permissions;
 use backend\models\PermissionsSearch;
 use yii\db\Exception;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -62,7 +61,7 @@ class PermissionsController extends OnlyAuthController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'rolesList' => RolesModel::getList()
+            'rolesList' => RolesModel::getList(),
         ]);
     }
 

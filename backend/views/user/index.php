@@ -55,7 +55,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => Html::activeDropDownList($searchModel, 'userRole', $roles, ['class'=>'form-control', 'prompt' => '---']),
             ],
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete}',
+                'visibleButtons' => [
+                    'view' => $btns['view'],
+                    'update' => $btns['update'],
+                    'delete' => $btns['delete']
+                ],
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
