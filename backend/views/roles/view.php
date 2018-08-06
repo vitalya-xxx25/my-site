@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <ul class="list-group roles-list-group">
                     <? foreach ($permissions as $permission) : ?>
                         <li data-id="<?=$permission->id?>" class="list-group-item">
-                            <span class="roles-list-item-name"><?=$permission->name?></span>
+                            <span class="roles-list-item-name"><?=$permission->name .' ('. $permission->description .')'?></span>
                         </li>
                     <? endforeach; ?>
                 </ul>

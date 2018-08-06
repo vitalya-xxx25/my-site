@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\assets\UserAsset;
+use common\components\OnlyAuthController;
 use common\models\m\UserModel;
 use common\models\Roles;
 use common\models\User2roles;
@@ -19,8 +20,17 @@ use yii\web\Response;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class UserController extends OnlyAuthController
 {
+    public $closedActions = [
+        'Index',
+        'View',
+        'Create',
+        'Update',
+        'Delete',
+        'SetRole'
+    ];
+
     public function beforeAction($action) {
         UserAsset::register($this->view);
         return parent::beforeAction($action);

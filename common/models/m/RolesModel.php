@@ -23,7 +23,7 @@ class RolesModel extends Roles
         $permissions = [];
         if (!empty($this->permissions)) {
             foreach ($this->permissions as $permission) {
-                array_push($permissions, $permission->name);
+                array_push($permissions, $permission->name .' ('. $permission->description .')');
             }
         }
         return implode('<br>', $permissions);

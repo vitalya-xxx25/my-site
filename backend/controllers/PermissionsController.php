@@ -14,12 +14,22 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use common\components\OnlyAuthController;
 
 /**
  * PermissionsController implements the CRUD actions for Permissions model.
  */
-class PermissionsController extends Controller
+class PermissionsController extends OnlyAuthController
 {
+    public $closedActions = [
+        'Index',
+        'View',
+        'Create',
+        'Update',
+        'Delete',
+        'SetRole'
+    ];
+
     public function beforeAction($action) {
         PermissionsAsset::register($this->view);
         return parent::beforeAction($action);

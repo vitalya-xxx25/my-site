@@ -18,15 +18,22 @@ class PermissionsModel extends Permissions
     }
 
     public static function getList() {
+        $list = [];
         $rows = self::find()
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'description'])
             ->where([
                 'active' => 1,
                 'trash' => 0
             ])
             ->all();
 
-        return ArrayHelper::map($rows, 'id', 'name');
+        if (!empty($rows)) {
+            foreach ($rows as $r) {
+                $list[$r['id']] = $r['name'] .' ('. $r['description'] .')';
+            }
+        }
+
+        return $list;
     }
 
     public function getRolesList() {

@@ -34,7 +34,7 @@ use yii\widgets\ActiveForm;
                 <ul class="list-group roles-list-group">
                     <? foreach ($permissions as $permission) : ?>
                         <li data-id="<?=$permission->id?>" class="list-group-item">
-                            <span class="roles-list-item-name"><?=$permission->name?></span>
+                            <span class="roles-list-item-name"><?=$permission->name .' ('. $permission->description .')'?></span>
                             <button type="button" class="btn btn-success btn-sm remove-role-btn <?=(!$permission->roles ? 'hidden' : '')?>">установленно</button>
                             <button type="button" class="btn btn-sm add-role-btn <?=($permission->roles ? 'hidden' : '')?>">добавить</button>
                         </li>
