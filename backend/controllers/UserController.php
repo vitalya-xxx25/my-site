@@ -10,6 +10,7 @@ use Yii;
 use common\models\User;
 use backend\models\UserSearch;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -49,7 +50,13 @@ class UserController extends Controller
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $roles = Roles::find()
+            ->select(['id', 'name'])
+            ->asArray()
+            ->all();
+
         return $this->render('index', [
+            'roles' => ArrayHelper::map($roles, 'id', 'name'),
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

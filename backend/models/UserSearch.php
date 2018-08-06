@@ -21,6 +21,8 @@ class UserSearch extends User
     public $updateTimeStart;
     public $updateTimeEnd;
 
+    public $userRole;
+
     public function behaviors()
     {
         return [
@@ -30,12 +32,6 @@ class UserSearch extends User
                 'dateStartAttribute' => 'createTimeStart',
                 'dateEndAttribute' => 'createTimeEnd',
             ],
-            /*[
-                'class' => DateRangeBehavior::className(),
-                'attribute' => 'updateTimeRange',
-                'dateStartAttribute' => 'updateTimeStart',
-                'dateEndAttribute' => 'updateTimeEnd',
-            ]*/
         ];
     }
 
@@ -45,7 +41,7 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'status', 'created_at', 'updated_at', 'userRole'], 'integer'],
             [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
             [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/'],
         ];
@@ -69,7 +65,8 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()
+            ->joinWith('roles');
 
         // add conditions that should always apply here
 
@@ -91,6 +88,7 @@ class UserSearch extends User
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'roles.id' => $this->userRole,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])

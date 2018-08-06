@@ -47,27 +47,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
             ],
-            /*[
-                'attribute'=>'updated_at',
+            [
+                'attribute' => 'userRole',
+                'label' => 'Роль пользователя',
                 'content'=>function($data) {
-                    return date('d.m.Y H:m:i', $data->updated_at);
+                    return !empty($data->roles->name) ? $data->roles->name : '---';
                 },
-                'filter' => DateRangePicker::widget([
-                    'model'=>$searchModel,
-                    'attribute'=>'updateTimeRange',
-                    'convertFormat'=>true,
-                    'startAttribute'=>'updateTimeStart',
-                    'endAttribute'=>'updateTimeEnd',
-                    'pluginOptions'=>[
-                        'timePicker'=>true,
-                        'timePickerIncrement'=>30,
-                        'locale'=>[
-                            'format'=>'Y-m-d h:i A'
-                        ]
-                    ]
-                ]),
-            ],*/
-
+                'filter' => Html::activeDropDownList($searchModel, 'userRole', $roles, ['class'=>'form-control', 'prompt' => '---']),
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
