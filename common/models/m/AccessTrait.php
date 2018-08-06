@@ -4,6 +4,9 @@ namespace common\models\m;
 
 trait AccessTrait {
 
+    private $_permissionsKeys;
+    private $_rolesKeys;
+
     /**
      * Проверка роли пользователя
      *
@@ -14,11 +17,13 @@ trait AccessTrait {
         $status = false;
 
         if (!empty($this->roles)) {
-            $rolesKeys = array_map(function($v) {
-                return strtolower($v->key);
-            }, $this->roles);
+            if (empty($this->rolesKeys)) {
+                $this->_rolesKeys = array_map(function($v) {
+                    return strtolower($v->key);
+                }, $this->roles);
+            }
 
-            if (in_array($role, $rolesKeys)) {
+            if (in_array($role, $this->_rolesKeys)) {
                 $status = true;
             }
         }
@@ -36,11 +41,13 @@ trait AccessTrait {
         $status = false;
 
         if (!empty($this->roles->permissions)) {
-            $permissionsKeys = array_map(function($v) {
-                return strtolower($v->key);
-            }, $this->roles->permissions);
+            if (empty($this->_permissionsKeys)) {
+                $this->_permissionsKeys = array_map(function($v) {
+                    return strtolower($v->key);
+                }, $this->roles->permissions);
+            }
 
-            if (in_array($perm, $permissionsKeys)) {
+            if (in_array($perm, $this->_permissionsKeys)) {
                 $status = true;
             }
         }
